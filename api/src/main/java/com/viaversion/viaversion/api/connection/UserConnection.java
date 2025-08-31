@@ -137,11 +137,6 @@ public interface UserConnection {
     void addClientWorld(Class<? extends Protocol> protocolClass, ClientWorld clientWorld);
 
     /**
-     * Clear stored objects, entity trackers and client worlds.
-     */
-    void clearStoredObjects();
-
-    /**
      * Sends a raw packet to the connection on the current thread.
      *
      * @param packet raw packet to send

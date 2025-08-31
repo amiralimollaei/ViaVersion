@@ -104,18 +104,12 @@ public class UserConnectionImpl implements UserConnection {
     @Override
     public <T extends StorableObject> @Nullable T remove(Class<T> objectClass) {
         final StorableObject object = storedObjects.remove(objectClass);
-        if (object != null) {
-            object.onRemove();
-        }
         return (T) object;
     }
 
     @Override
     public void put(StorableObject object) {
-        final StorableObject previousObject = storedObjects.put(object.getClass(), object);
-        if (previousObject != null) {
-            previousObject.onRemove();
-        }
+        storedObjects.put(object.getClass(), object);
     }
 
     @Override
@@ -151,17 +145,6 @@ public class UserConnectionImpl implements UserConnection {
     @Override
     public void addClientWorld(final Class<? extends Protocol> protocolClass, final ClientWorld clientWorld) {
         clientWorlds.putIfAbsent(protocolClass, clientWorld);
-    }
-
-    @Override
-    public void clearStoredObjects() {
-        for (StorableObject object : storedObjects.values()) {
-            object.onRemove();
-        }
-        storedObjects.clear();
-        entityTrackers.clear();
-        itemHashers.clear();
-        clientWorlds.clear();
     }
 
     @Override

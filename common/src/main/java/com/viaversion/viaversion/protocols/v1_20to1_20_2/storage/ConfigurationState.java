@@ -91,16 +91,6 @@ public class ConfigurationState implements StorableObject {
         queuedJoinGame = true;
     }
 
-    @Override
-    public void onRemove() {
-        for (final QueuedPacket packet : packetQueue) {
-            packet.buf().release();
-        }
-        if (joinGamePacket != null) {
-            joinGamePacket.buf().release();
-        }
-    }
-
     public void sendQueuedPackets(final UserConnection connection) {
         final boolean hasJoinGamePacket = joinGamePacket != null;
         if (hasJoinGamePacket) {
@@ -169,64 +159,12 @@ public class ConfigurationState implements StorableObject {
         return settingsPacket;
     }
 
-    public static final class QueuedPacket {
-        private final ByteBuf buf;
-        private final boolean clientbound;
-        private final PacketType packetType;
-        private final int packetId;
-        private final boolean skipCurrentPipeline;
-
-        private QueuedPacket(final ByteBuf buf, final boolean clientbound, final PacketType packetType,
-                             final int packetId, final boolean skipCurrentPipeline) {
-            this.buf = buf;
-            this.clientbound = clientbound;
-            this.packetType = packetType;
-            this.packetId = packetId;
-            this.skipCurrentPipeline = skipCurrentPipeline;
-        }
-
-        public ByteBuf buf() {
-            return buf;
-        }
-
-        public boolean clientbound() {
-            return clientbound;
-        }
-
-        public int packetId() {
-            return packetId;
-        }
-
-        public @Nullable PacketType packetType() {
-            return packetType;
-        }
-
-        public boolean skipCurrentPipeline() {
-            return skipCurrentPipeline;
-        }
+    public record QueuedPacket(ByteBuf buf, boolean clientbound, PacketType packetType, int packetId,
+                               boolean skipCurrentPipeline) {
     }
 
-    public static final class ClientInformation {
-        private final String language;
-        private final byte viewDistance;
-        private final int chatVisibility;
-        private final boolean showChatColors;
-        private final short modelCustomization;
-        private final int mainHand;
-        private final boolean textFiltering;
-        private final boolean allowListing;
-
-        public ClientInformation(final String language, final byte viewDistance, final int chatVisibility,
-                                 final boolean showChatColors, final short modelCustomization, final int mainHand,
-                                 final boolean textFiltering, final boolean allowListing) {
-            this.language = language;
-            this.viewDistance = viewDistance;
-            this.chatVisibility = chatVisibility;
-            this.showChatColors = showChatColors;
-            this.modelCustomization = modelCustomization;
-            this.mainHand = mainHand;
-            this.textFiltering = textFiltering;
-            this.allowListing = allowListing;
-        }
+    public record ClientInformation(String language, byte viewDistance, int chatVisibility, boolean showChatColors,
+                                    short modelCustomization, int mainHand, boolean textFiltering,
+                                    boolean allowListing) {
     }
 }

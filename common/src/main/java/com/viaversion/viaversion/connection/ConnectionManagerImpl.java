@@ -80,8 +80,6 @@ public class ConnectionManagerImpl implements ConnectionManager {
         } else {
             clientConnections.remove(id, connection);
         }
-
-        connection.clearStoredObjects();
     }
 
     @Override
